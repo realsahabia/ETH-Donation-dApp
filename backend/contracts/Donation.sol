@@ -33,11 +33,11 @@ contract DonationDApp {
         return totalDonations;
     }
 
-    function getDonation(uint256 index) external view returns (address, uint256) {
-        // RETURN DONATION DETAILS BY INDEX
-        Donation memory donation = donations[index];
-        return (donation.donar, donation.amount);
-    }
+    // function getDonation(uint256 index) external view returns (address, uint256) {
+    //     // RETURN DONATION DETAILS BY INDEX
+    //     Donation memory donation = donations[index];
+    //     return (donation.donar, donation.amount);
+    // }
 
     function getAllDonations() external view returns (Donation[] memory) {
         // CREATE A NEW DYNAMIC ARRAY TO STORE ALL DONATIONS
@@ -50,5 +50,12 @@ contract DonationDApp {
         
         // RETURN THE ARRAY OF ALL DONATIONS
         return allDonations;
+    }
+
+    // Function to withdraw funds from the contract
+    function withdraw(uint256 amount) public {
+        require(msg.sender == owner, "Only the contract owner can withdraw funds");
+        require(amount <= address(this).balance, "Insufficient funds in the contract");
+        payable(owner).transfer(amount);
     }
 }
