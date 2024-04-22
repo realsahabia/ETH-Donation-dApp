@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
+import { ethers, formatEther } from 'ethers';
 import './App.css';
 import { FaHeart } from 'react-icons/fa';
 
@@ -43,7 +43,7 @@ function App() {
 
       // Reguest signer
       let signer = await provider.getSigner();
-      console.log(signer)
+      // console.log(signer)
 
       // load contract and display its data
       let contractInstance  = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
@@ -52,6 +52,7 @@ function App() {
 
       // Fetch initial donation data
       await getAllDonations();
+      await totalDonations();
 
     }catch(err){
       setErrorMessage(`Failed to fetch data: ${err}`);
@@ -77,6 +78,7 @@ function App() {
 
             // Refresh donation data
             await getAllDonations();
+            await totalDonations();
         } else {
             throw new Error("Contract or signer not initialized");
         }
@@ -87,18 +89,35 @@ function App() {
     }
   }
   
-  const getAllDonations = async () => {
+  async function getAllDonations() {
     try {
-      let donations = await contract.getAllDonations();
-
-      console.log(donations)
-
-      setDonations(donations);
+        await contract.getAllDonations()
+        .then((result) =>{
+         const donationsData =  result.map(
+          el => [el[0], formatEther(el[1])])
+          setDonations(donationsData);          
+        })
+        // console.log(donationsData)
+        
 
     } catch(error){
       console.log(error)
     }
   }
+
+  const totalDonations = async () => {
+    try {
+        const total = await contract.getTotalDonations();
+        const convertTotal = ethers.formatEther(total);
+        // console.log(convertTotal);
+        setTotalDonated(convertTotal);
+        
+    } catch (error) {
+        console.error("Error fetching total donations:", error);
+        throw error; // Rethrow the error to handle it outside the function if needed
+    }
+}
+
 
    // Fetch initial donation data when the component mounts
    useEffect(() => {
@@ -107,8 +126,7 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <div className="flex gap-40" style={{width: '800px'}}>
+        <div className="flex gap-40" style={{width: '1000px'}}>
 
           <div className="flex flex-col">
             <div className="flex">
@@ -182,7 +200,7 @@ function App() {
             </div>
             <div className="mt-20">
             <h1 className="donateHeader">Total Amount Raised!</h1>
-            <div className="amountButton w-full">{totalDonated}</div>
+            <div className="amountButton w-full">{totalDonated} ETH</div>
             </div>
           </div>
 
@@ -194,22 +212,19 @@ function App() {
               </div>
             </div>
             </div>
-            <div>
-             {/* Display recent donations */}
+                         
+            {/* Display recent donations */}
+            <div className="donationBubble text-[14px]">
              {donations.map((donation, idx) => (
-              <div key={idx} className="donationBubbleLeft">
+              <p key={idx} className="flex w-full items-center gap-2">
                 <FaHeart className="text-[#a73348]"/>
-                <span className="paddingLeft">
-                  {donation.amount} ETH
-                  &nbsp;
-                  <span className="byAddress">by {donation.donor}</span>
-                </span>
-              </div>
+                <span className="font-bold">{donation[1]} ETH</span>
+                by {donation[0]}
+              </p>
             ))}
           </div>
           </div>
         </div>
-      </header>
     </div>
   );
 }
