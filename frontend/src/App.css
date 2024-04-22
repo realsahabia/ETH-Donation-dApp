@@ -49,6 +49,20 @@
   border-color: #ffe484;
 }
 
+.amountDisplay {
+  color: #000;
+  background-color: #fff;
+  font-weight: 600;
+  display: inline-block;
+  text-align: center;
+  padding: .375rem .75rem;
+  font-family: -apple-system;
+  text-decoration: none;
+  width: 100px;
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+}
+
 .donateHeader {
   color: #ffe484;
   font-size: 30px;

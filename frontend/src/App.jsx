@@ -200,7 +200,7 @@ function App() {
             </div>
             <div className="mt-20">
             <h1 className="donateHeader">Total Amount Raised!</h1>
-            <div className="amountButton w-full">{totalDonated} ETH</div>
+            <div className="amountDisplay w-full">{totalDonated} ETH</div>
             </div>
           </div>
 
