@@ -77,4 +77,4 @@ This Donation DApp is built using the following technologies:
 
 ## Screenshots
 
-/path/to/homepage.png
+![DApp Screenshot](screenshots/homepage.png)
